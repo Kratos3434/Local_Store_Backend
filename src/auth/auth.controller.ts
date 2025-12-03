@@ -2,10 +2,10 @@ import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param
 import { AuthService } from "./auth.service";
 import type { Response } from "express";
 import jwt from 'jsonwebtoken';
-import { privateKey, type Signup, thirtyDaysInMs, type User, USER_SESSION_TOKEN, USER_VERIFY_TOKEN } from "src/data";
-import createResponse, { isValidEmail } from "src/utils";
+import { privateKey, type Signup, thirtyDaysInMs, type User, USER_SESSION_TOKEN, USER_VERIFY_TOKEN } from "../data";
+import createResponse, { isValidEmail } from "../utils";
 import { AuthVerifyGuard } from "./auth-verify.guard";
-import { UserDecor } from "src/user/user.decorator";
+import { UserDecor } from "../user/user.decorator";
 import { AuthSessionGuard } from "./auth-session.guard";
 
 @Controller("/auth")

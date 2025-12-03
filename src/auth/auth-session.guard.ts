@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { JWTPayload, privateKey, USER_SESSION_TOKEN } from "src/data";
-import { UserService } from "src/user/user.service";
+import { JWTPayload, privateKey, USER_SESSION_TOKEN } from "../data";
+import { UserService } from "../user/user.service";
 import jwt from 'jsonwebtoken';
 
 @Injectable()

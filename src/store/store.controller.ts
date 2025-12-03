@@ -1,10 +1,10 @@
 import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { StoreService } from "./store.service";
-import { AuthSessionGuard } from "src/auth/auth-session.guard";
-import { UserDecor } from "src/user/user.decorator";
-import type { Store, User } from "src/data";
-import { provincesMap } from "src/data/provinces-map";
-import createResponse, { isValidCanadianPostalCode } from "src/utils";
+import { AuthSessionGuard } from "../auth/auth-session.guard";
+import { UserDecor } from "../user/user.decorator";
+import type { Store, User } from "../data";
+import { provincesMap } from "../data/provinces-map";
+import createResponse, { isValidCanadianPostalCode } from "../utils";
 
 @Controller("/store")
 export class StoreController {

@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import bcrypt from "bcryptjs";
 import randomstring from 'randomstring';
-import { Signup, User } from "src/data";
-import { isMoreThanOneDayOld, isMoreThanOneMinuteOld } from "src/utils";
+import { Signup, User } from "../data";
+import { isMoreThanOneDayOld, isMoreThanOneMinuteOld } from "../utils";
 
 @Injectable()
 export class AuthService {

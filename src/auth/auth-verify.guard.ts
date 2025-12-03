@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Observable } from "rxjs";
-import { UserService } from "src/user/user.service";
+import { UserService } from "../user/user.service";
 import jwt from 'jsonwebtoken';
-import { JWTPayload, privateKey, USER_VERIFY_TOKEN } from "src/data";
+import { JWTPayload, privateKey, USER_VERIFY_TOKEN } from "../data";
 
 @Injectable()
 export class AuthVerifyGuard implements CanActivate {
