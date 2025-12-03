@@ -4,7 +4,7 @@ import { AuthSessionGuard } from "src/auth/auth-session.guard";
 import { UserDecor } from "src/user/user.decorator";
 import type { Store, User } from "src/data";
 import { provincesMap } from "src/data/provinces-map";
-import createResponse, { isValidCanadianPostalCode } from "src/utils";
+import createResponse, { isValidCanadianPostalCode } from "../utils";
 
 @Controller("/store")
 export class StoreController {

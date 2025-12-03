@@ -3,7 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import bcrypt from "bcryptjs";
 import randomstring from 'randomstring';
 import { Signup, User } from "src/data";
-import { isMoreThanOneDayOld, isMoreThanOneMinuteOld } from "src/utils";
+import { isMoreThanOneDayOld, isMoreThanOneMinuteOld } from "../utils";
 
 @Injectable()
 export class AuthService {
