@@ -18,7 +18,7 @@ export class AuthVerifyGuard implements CanActivate {
         }
 
         try {
-            const decoded = jwt.verify(token, privateKey) as JWTPayload;
+            const decoded = jwt.verify(token, privateKey!) as JWTPayload;
 
             if (decoded.type !== USER_VERIFY_TOKEN) {
                 throw new UnauthorizedException('Unauthorized: Type mismatch');

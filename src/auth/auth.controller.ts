@@ -26,7 +26,7 @@ export class AuthController {
             const token = jwt.sign({
                 userId: user.id,
                 type: USER_VERIFY_TOKEN
-            }, privateKey, {
+            }, privateKey!, {
                 expiresIn: '30d',
                 algorithm: 'RS256'
             });
@@ -43,7 +43,7 @@ export class AuthController {
         const token = jwt.sign({
             userId: user.id,
             type: USER_SESSION_TOKEN
-        }, privateKey, {
+        }, privateKey!, {
             expiresIn: '30d',
             algorithm: 'RS256'
         });
@@ -72,7 +72,7 @@ export class AuthController {
 
         const user = await this.authService.signup(body);
 
-        const token = jwt.sign({ userId: user.id, type: USER_VERIFY_TOKEN }, privateKey, {
+        const token = jwt.sign({ userId: user.id, type: USER_VERIFY_TOKEN }, privateKey!, {
             expiresIn: '30d',
             algorithm: 'RS256'
         });

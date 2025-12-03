@@ -1,7 +1,9 @@
 import fs from 'fs';
 
 
-export const privateKey = fs.readFileSync('privateKey.key');
+// export const privateKey = fs.readFileSync('privateKey.key');
+
+export const privateKey = process.env.PRIVATE_KEY?.replace(/\\n/g, '\n');
 
 export const USER_SESSION_TOKEN = "USER_SESSION_TOKEN";
 export const USER_VERIFY_TOKEN = "USER_VERIFY_TOKEN";
