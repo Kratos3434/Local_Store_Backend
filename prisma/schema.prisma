@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// id Int @id @default(autoincrement())
+// createdAt DateTime @default(now())
+// updatedAt DateTime?
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  password   String
+  isVerified Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
+  profile    Profile?
+  otp        Otp?
+  store      Store?
+}
+
+model Profile {
+  id        Int       @id @default(autoincrement())
+  firstName String
+  lastName  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  userId    Int       @unique
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  createdAt DateTime @default(now())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Store {
+  id          Int            @id @default(autoincrement())
+  name        String         @unique
+  description String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime?
+  profilePictureURL String @default("https://probeit.ca/wp-content/uploads/2023/11/placeholder-39-1-1024x683.png")
+  backgroundPictureURL String @default("https://probeit.ca/wp-content/uploads/2023/11/placeholder-39-1-1024x683.png")
+  userId      Int            @unique
+  user        User           @relation(fields: [userId], references: [id])
+  categoryId  Int
+  category    Store_Category @relation(fields: [categoryId], references: [id])
+  address     Store_Address?
+}
+
+model Store_Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  stores    Store[]
+}
+
+model Store_Address {
+  id           Int       @id @default(autoincrement())
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  province     String
+  postalCode   String
+  country      String    @default("Canada")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
+  storeId      Int       @unique
+  store        Store     @relation(fields: [storeId], references: [id])
+}
+
+model Product {
+  id               Int              @id @default(autoincrement())
+  name             String
+  description      String
+  priceInCad       Decimal          @db.Decimal(10, 2)
+  featuredPhotoURL String           @default("https://www.mobieg.co.za/wp-content/uploads/2020/04/product-placeholder.jpg")
+  isMeetUpOnly     Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime?
+  categoryId       Int
+  category         Product_Category @relation(fields: [categoryId], references: [id])
+  tags Product_Tags[]
+}
+
+model Product_Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  products  Product[]
+}
+
+model Product_Tags {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+}
