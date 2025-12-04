@@ -12,4 +12,30 @@ export class UserService {
             }
         });
     }
+
+    async getProfileByUserId(userId: number) {
+        const res =  await this.prismaService.profile.findUnique({
+            where: {
+                userId,
+            },
+            include: {
+                user: {
+                    select: {
+                        email: true
+                    }
+                }
+            }
+        });
+
+        if (!res) return null;
+
+        return {
+            firstName: res.firstName,
+            lastName: res.lastName,
+            userId: res.userId,
+            email: res.user.email,
+            createdAt: res.createdAt,
+            updatedAt: res.updatedAt
+        };
+    }
 }

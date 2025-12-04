@@ -1,6 +1,3 @@
-import fs from 'fs';
-
-
 // export const privateKey = fs.readFileSync('privateKey.key');
 
 export const privateKey = process.env.PRIVATE_KEY?.replace(/\\n/g, '\n');
