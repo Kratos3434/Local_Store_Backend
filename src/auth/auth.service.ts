@@ -137,5 +137,70 @@ export class AuthService {
 
     //Seller Auth
 
+    async sellerSignin(email: string, password: string) {
+        const seller = await this.prismaService.seller.findUnique({
+            where: {
+                email
+            }
+        });
+
+        if (!seller) throw new BadRequestException("Incorrect email or password");
+
+        const isPasswordCorrect = await bcrypt.compare(password, seller.password);
+
+        if (!isPasswordCorrect) throw new BadRequestException("Incorrect email or password");
+
+        return seller;
+    }
+
+    async sellerSignup(data: Signup) {
+        const seller = await this.prismaService.seller.findUnique({
+            where: {
+                email: data.email
+            }
+        });
+
+        if (!seller) throw new BadRequestException("Email already exists");
+
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        const newSeller = await this.prismaService.seller.create({
+            data: {
+                email: data.email,
+                password: hashedPassword
+            }
+        });
+
+        await this.prismaService.seller_Profile.create({
+            data: {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                sellerId: newSeller.id
+            }
+        });
+
+        const otp = randomstring.generate({
+            charset: 'numeric',
+            length: 6
+        });
+
+        const hashedOtp = await bcrypt.hash(otp, 10);
+
+        await this.prismaService.seller_Otp.create({
+            data: {
+                code: hashedOtp,
+                sellerId: newSeller.id
+            }
+        });
+
+        return newSeller;
+    }
     
+    async verifySeller() {
+
+    }
+
+    async sendSellerOtp() {
+        
+    }
 }

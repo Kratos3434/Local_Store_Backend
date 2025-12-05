@@ -5,6 +5,9 @@ export const privateKey = process.env.PRIVATE_KEY?.replace(/\\n/g, '\n');
 export const USER_SESSION_TOKEN = "USER_SESSION_TOKEN";
 export const USER_VERIFY_TOKEN = "USER_VERIFY_TOKEN";
 
+export const SELLER_SESSION_TOKEN = "SELLER_SESSION_TOKEN";
+export const SELLER_VERIFY_TOKEN = "SELLER_VERIFY_TOKEN";
+
 export interface Signup {
     email: string,
     firstName: string,

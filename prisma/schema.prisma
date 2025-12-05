@@ -55,6 +55,7 @@ model Seller {
   updatedAt  DateTime?
   profile    Seller_Profile?
   store      Store?
+  sellerOtp  Seller_Otp?
 }
 
 model Seller_Profile {
@@ -65,6 +66,14 @@ model Seller_Profile {
   updatedAt DateTime?
   sellerId  Int       @unique
   seller    Seller    @relation(fields: [sellerId], references: [id])
+}
+
+model Seller_Otp {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  createdAt DateTime @default(now())
+  sellerId  Int      @unique
+  seller    Seller   @relation(fields: [sellerId], references: [id])
 }
 
 model Store {
