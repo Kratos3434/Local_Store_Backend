@@ -134,4 +134,8 @@ export class AuthService {
 
         return true;
     }
+
+    //Seller Auth
+
+    
 }

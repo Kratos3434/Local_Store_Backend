@@ -32,16 +32,9 @@ export class StoreController {
         if (!isValidCanadianPostalCode(address.postalCode)) throw new BadRequestException("Invalid postal code");
         if (!category) throw new BadRequestException("Category is required");
 
-        await this.storeService.createStore(user, body);
+        // await this.storeService.createStore(user, body);
 
         return createResponse(true, HttpStatus.CREATED, null, "Store successfully created");
     }
 
-    @Get('/')
-    @UseGuards(AuthSessionGuard)
-    @HttpCode(HttpStatus.OK)
-    async getStore(@UserDecor() user: User) {
-        const store = await this.storeService.getStoreByUserId(user.id);
-        return createResponse(true, HttpStatus.OK, store, "Store successfully retrieved");
-    }
 }
