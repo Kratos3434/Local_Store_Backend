@@ -2,11 +2,13 @@ import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param
 import { AuthService } from "./auth.service";
 import type { Response } from "express";
 import jwt from 'jsonwebtoken';
-import { privateKey, SELLER_SESSION_TOKEN, SELLER_VERIFY_TOKEN, type Signup, thirtyDaysInMs, type User, USER_SESSION_TOKEN, USER_VERIFY_TOKEN } from "../data";
+import { privateKey, type Seller, SELLER_SESSION_TOKEN, SELLER_VERIFY_TOKEN, type Signup, thirtyDaysInMs, type User, USER_SESSION_TOKEN, USER_VERIFY_TOKEN } from "../data";
 import createResponse, { isValidEmail } from "../utils";
 import { AuthVerifyGuard } from "./auth-verify.guard";
 import { UserDecor } from "../user/user.decorator";
 import { AuthSessionGuard } from "./auth-session.guard";
+import { AuthSellerVerifyGuard } from "./auth-seller-verify.guard";
+import { SellerDecor } from "../seller/seller.decorator";
 
 @Controller("/auth")
 export class AuthController {
@@ -177,6 +179,24 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async sendOtp(@UserDecor() user: User) {
         await this.authService.sendOtp(user);
+
+        return createResponse(true, HttpStatus.OK, null, 'Otp sent successfully');
+    }
+
+    @Put('/seller/verify/:otp')
+    @UseGuards(AuthSellerVerifyGuard)
+    @HttpCode(HttpStatus.OK)
+    async verifySeller(@SellerDecor() seller: Seller, @Param('otp') otp: string) {
+        await this.authService.verifySeller(seller, otp);
+
+        return createResponse(true, HttpStatus.OK, null, 'Seller verified successfully');
+    }
+
+    @Put('/seller/send-otp')
+    @UseGuards(AuthSellerVerifyGuard)
+    @HttpCode(HttpStatus.OK)
+    async sendSellerOtp(@SellerDecor() seller: Seller) {
+        await this.authService.sendSellerOtp(seller);
 
         return createResponse(true, HttpStatus.OK, null, 'Otp sent successfully');
     }

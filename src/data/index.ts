@@ -27,8 +27,18 @@ export interface User {
     updatedAt: Date | null;
 };
 
+export interface Seller {
+    id: number;
+    email: string;
+    password: string;
+    isVerified: boolean;
+    createdAt: Date;
+    updatedAt: Date | null;
+};
+
 export interface JWTPayload {
     userId: number,
+    sellerId: number,
     type: string
 };
 

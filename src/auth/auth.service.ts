@@ -2,12 +2,12 @@ import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/
 import { PrismaService } from "../prisma/prisma.service";
 import bcrypt from "bcryptjs";
 import randomstring from 'randomstring';
-import { Signup, User } from "../data";
+import { Seller, Signup, User } from "../data";
 import { isMoreThanOneDayOld, isMoreThanOneMinuteOld } from "../utils";
 
 @Injectable()
 export class AuthService {
-    constructor(private prismaService: PrismaService) {}
+    constructor(private prismaService: PrismaService) { }
 
     async signin(email: string, password: string) {
         const user = await this.prismaService.user.findUnique({
@@ -78,7 +78,7 @@ export class AuthService {
         });
 
         if (!otp) throw new BadRequestException('User does not have an otp yet');
-        
+
         const isOtpCorrect = await bcrypt.compare(code, otp.code);
 
         if (!isOtpCorrect) throw new BadRequestException('Incorrect otp');
@@ -90,7 +90,7 @@ export class AuthService {
                 id: user.id
             },
             data: {
-                isVerified: true, 
+                isVerified: true,
                 updatedAt: new Date()
             }
         });
@@ -195,12 +195,71 @@ export class AuthService {
 
         return newSeller;
     }
-    
-    async verifySeller() {
 
+    async verifySeller(seller: Seller, otpCode: string) {
+        if (seller.isVerified) throw new BadRequestException('Seller is already verified');
+
+        const otp = await this.prismaService.seller_Otp.findUnique({
+            where: {
+                sellerId: seller.id
+            }
+        });
+
+        if (!otp) throw new BadRequestException("Seller does not have an OTP yet");
+
+        const isCorrectOtp = await bcrypt.compare(otpCode, otp.code);
+
+        if (!isCorrectOtp) throw new BadRequestException("Incorrect Otp");
+
+        if (isMoreThanOneDayOld(otp.createdAt)) throw new BadRequestException('Otp is expired');
+
+        await this.prismaService.seller.update({
+            where: {
+                id: seller.id
+            },
+            data: {
+                isVerified: true,
+                updatedAt: new Date()
+            }
+        });
+
+        return true;
     }
 
-    async sendSellerOtp() {
-        
+    async sendSellerOtp(seller: Seller) {
+        if (seller.isVerified) throw new BadRequestException('Seller is already verified');
+
+        const otp = await this.prismaService.seller_Otp.findUnique({
+            where: {
+                sellerId: seller.id
+            }
+        });
+
+        if (!otp) throw new BadRequestException('Seller does not have an otp yet');
+
+        if (!isMoreThanOneMinuteOld(otp.createdAt)) throw new BadRequestException('Please wait 1 minute before sending new otp');
+
+        const newOtp = randomstring.generate({
+            charset: 'numeric',
+            length: 6
+        });
+
+        const hashedOtp = await bcrypt.hash('123456', 10);
+
+        await this.prismaService.seller_Otp.update({
+            where: {
+                id: otp.id
+            },
+            data: {
+                code: hashedOtp,
+                createdAt: new Date()
+            }
+        });
+
+        //!todo: Send otp code to the user's email
+
+        /************************ */
+
+        return true;
     }
 }
