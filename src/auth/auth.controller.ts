@@ -214,4 +214,11 @@ export class AuthController {
     async authenticateSessionToken(@UserDecor() user: User) {
         return createResponse(true, HttpStatus.OK, { email: user.email }, 'Session token authenticated successfully');
     }
+
+    @Get('/authenticate/seller-verify-token')
+    @UseGuards(AuthSellerVerifyGuard)
+    @HttpCode(HttpStatus.OK)
+    async authenticateSellerVerifyToken(@SellerDecor() seller: Seller) {
+        return createResponse(true, HttpStatus.OK, {email: seller.email}, 'Seller verify token authenticated successfully')
+    }
 }
