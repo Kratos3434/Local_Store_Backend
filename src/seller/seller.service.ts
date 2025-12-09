@@ -9,6 +9,14 @@ export class SellerService {
         return await this.prismaService.seller.findUnique({
             where: {
                 id: sellerId
+            },
+        });
+    }
+
+    async getSellerProfileBySellerId(sellerId: number) {
+        return await this.prismaService.seller_Profile.findUnique({
+            where: {
+                sellerId
             }
         });
     }

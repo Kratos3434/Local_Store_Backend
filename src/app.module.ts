@@ -7,19 +7,25 @@ import { UserService } from './user/user.service';
 import { PrismaService } from './prisma/prisma.service';
 import { UserController } from './user/user.controller';
 import { SellerService } from './seller/seller.service';
+import { StoreController } from './store/store.controller';
+import { SellerController } from './seller/seller.controller';
+import { StoreService } from './store/store.service';
 
 @Module({
   controllers: [
     AppController,
     AuthController,
     UserController,
+    StoreController,
+    SellerController
   ],
   providers: [
     AppService,
     PrismaService,
     AuthService,
     UserService,
-    SellerService
+    SellerService,
+    StoreService
   ],
   exports: [PrismaService],
 })

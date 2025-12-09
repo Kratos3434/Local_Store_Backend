@@ -2,10 +2,11 @@ import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post,
 import { StoreService } from "./store.service";
 import { AuthSessionGuard } from "../auth/auth-session.guard";
 import { UserDecor } from "../user/user.decorator";
-import type { Store, User } from "../data";
+import type { Seller, Store, User } from "../data";
 import { provincesMap } from "../data/provinces-map";
 import createResponse, { isValidCanadianPostalCode } from "../utils";
-import canada from 'canada';
+import { AuthSellerSessionGuard } from "src/auth/auth-seller-session.guard";
+import { SellerDecor } from "src/seller/seller.decorator";
 
 @Controller("/store")
 export class StoreController {
@@ -36,6 +37,15 @@ export class StoreController {
         // await this.storeService.createStore(user, body);
 
         return createResponse(true, HttpStatus.CREATED, null, "Store successfully created");
+    }
+
+    @Get('/')
+    @UseGuards(AuthSellerSessionGuard)
+    @HttpCode(HttpStatus.OK)
+    async getStoreBySellerId(@SellerDecor() seller: Seller) {
+        const data = await this.storeService.getStoreBySellerId(seller.id);
+
+        return createResponse(true, HttpStatus.OK, data, "Store successfully retrieved");
     }
 
 }
