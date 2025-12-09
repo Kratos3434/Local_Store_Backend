@@ -160,7 +160,7 @@ export class AuthService {
             }
         });
 
-        if (!seller) throw new BadRequestException("Email already exists");
+        if (seller) throw new BadRequestException("Email already exists");
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
 

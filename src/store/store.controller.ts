@@ -5,6 +5,7 @@ import { UserDecor } from "../user/user.decorator";
 import type { Store, User } from "../data";
 import { provincesMap } from "../data/provinces-map";
 import createResponse, { isValidCanadianPostalCode } from "../utils";
+import canada from 'canada';
 
 @Controller("/store")
 export class StoreController {
@@ -20,7 +21,7 @@ export class StoreController {
             address,
             category
         } = body;
-
+        
         if (!name) throw new BadRequestException("Name is required");
         if (!description) throw new BadRequestException("Description is required");
         if (!address) throw new BadRequestException("Address is required");
