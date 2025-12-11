@@ -1,12 +1,11 @@
 import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { StoreService } from "./store.service";
 import type { Seller, Store } from "../data";
-import { provincesMap } from "../data/provinces-map";
 import createResponse, { isValidCanadianPostalCode } from "../utils";
 import { AuthSellerSessionGuard } from "../auth/auth-seller-session.guard";
 import { SellerDecor } from "../seller/seller.decorator";
-import { isValidProvince } from "src/data/provinces";
-import { isValidCity } from "src/data/cities";
+import { isValidProvince } from "../data/provinces";
+import { isValidCity } from "../data/cities";
 
 @Controller("/store")
 export class StoreController {
