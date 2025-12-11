@@ -1,21 +1,21 @@
 import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { StoreService } from "./store.service";
-import { AuthSessionGuard } from "../auth/auth-session.guard";
-import { UserDecor } from "../user/user.decorator";
-import type { Seller, Store, User } from "../data";
+import type { Seller, Store } from "../data";
 import { provincesMap } from "../data/provinces-map";
 import createResponse, { isValidCanadianPostalCode } from "../utils";
-import { AuthSellerSessionGuard } from "src/auth/auth-seller-session.guard";
-import { SellerDecor } from "src/seller/seller.decorator";
+import { AuthSellerSessionGuard } from "../auth/auth-seller-session.guard";
+import { SellerDecor } from "../seller/seller.decorator";
+import { isValidProvince } from "src/data/provinces";
+import { isValidCity } from "src/data/cities";
 
 @Controller("/store")
 export class StoreController {
     constructor(private readonly storeService: StoreService) {}
 
     @Post('/create')
-    @UseGuards(AuthSessionGuard)
+    @UseGuards(AuthSellerSessionGuard)
     @HttpCode(HttpStatus.CREATED)
-    async createStore(@UserDecor() user: User, @Body() body: Store) {
+    async createStore(@SellerDecor() seller: Seller, @Body() body: Store) {
         const {
             name,
             description,
@@ -27,14 +27,15 @@ export class StoreController {
         if (!description) throw new BadRequestException("Description is required");
         if (!address) throw new BadRequestException("Address is required");
         if (!address.addressLine1) throw new BadRequestException("Address Line 1 is required");
-        if (!address.city) throw new BadRequestException("City is required");
         if (!address.province) throw new BadRequestException("Province is required");
-        if (!provincesMap.has(address.province)) throw new BadRequestException("Province is not a valid Canadian province");
+        if (!isValidProvince(address.province)) throw new BadRequestException("Province is not valid");
+        if (!address.city) throw new BadRequestException("City is required");
+        if (!isValidCity(address.province, address.city)) throw new BadRequestException("City is invalid");
         if (!address.postalCode) throw new BadRequestException("Postal code is required");
         if (!isValidCanadianPostalCode(address.postalCode)) throw new BadRequestException("Invalid postal code");
         if (!category) throw new BadRequestException("Category is required");
 
-        // await this.storeService.createStore(user, body);
+        await this.storeService.createStore(seller.id, body);
 
         return createResponse(true, HttpStatus.CREATED, null, "Store successfully created");
     }

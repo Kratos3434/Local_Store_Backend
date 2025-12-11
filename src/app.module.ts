@@ -10,6 +10,8 @@ import { SellerService } from './seller/seller.service';
 import { StoreController } from './store/store.controller';
 import { SellerController } from './seller/seller.controller';
 import { StoreService } from './store/store.service';
+import { StoreCategoryController } from './store-category/store-category.controller';
+import { StoreCategoryService } from './store-category/store-category.service';
 
 @Module({
   controllers: [
@@ -17,7 +19,8 @@ import { StoreService } from './store/store.service';
     AuthController,
     UserController,
     StoreController,
-    SellerController
+    SellerController,
+    StoreCategoryController,
   ],
   providers: [
     AppService,
@@ -25,7 +28,8 @@ import { StoreService } from './store/store.service';
     AuthService,
     UserService,
     SellerService,
-    StoreService
+    StoreService,
+    StoreCategoryService,
   ],
   exports: [PrismaService],
 })
