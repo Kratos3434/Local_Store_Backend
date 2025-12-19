@@ -10,6 +10,9 @@ export class SellerService {
             where: {
                 id: sellerId
             },
+            include: {
+                store: true
+            }
         });
     }
 

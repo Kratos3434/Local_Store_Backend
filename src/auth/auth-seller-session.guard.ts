@@ -28,6 +28,7 @@ export class AuthSellerSessionGuard implements CanActivate {
             if (!seller) throw new UnauthorizedException('Unauthorized: Seller does not exist');
 
             request.seller = seller;
+            request.store = seller.store;
 
             return true;
         } catch (err) {

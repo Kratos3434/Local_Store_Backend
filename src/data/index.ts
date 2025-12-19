@@ -43,6 +43,7 @@ export interface JWTPayload {
 };
 
 export interface Store {
+    id: number;
     name: string;
     description: string;
     address: Store_Address;
@@ -55,4 +56,16 @@ export interface Store_Address {
     city: string;
     province: string;
     postalCode: string;
+};
+
+export interface Product {
+    name: string;
+    description: string;
+    priceInCad: number;
+    isNew: boolean;
+    featuredPhotoURL: string;
+    isMeetUpOnly: boolean;
+    quantity: number;
+    category: string;
+    tags: string[];
 };
