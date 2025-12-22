@@ -139,7 +139,7 @@ model Product_Category {
   updatedAt DateTime?
   products  Product[]
 }
-
+//
 model Product_Tags {
   id        Int       @id @default(autoincrement())
   name      String
