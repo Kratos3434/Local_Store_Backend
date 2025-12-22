@@ -72,4 +72,15 @@ export class ProductService {
             }
         })
     }
+
+    async getProductByIdAndStoreId(productId: number, storeId: number) {
+        return await this.prismaService.product.findFirst({
+            where: {
+                AND: [
+                    {id: productId},
+                    {storeId}
+                ]
+            }
+        })
+    }
 }

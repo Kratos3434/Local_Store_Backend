@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { AuthSellerSessionGuard } from "../auth/auth-seller-session.guard";
 import { type Store, type Product, type Seller } from "../data";
@@ -40,5 +40,16 @@ export class ProductController {
         }
 
         return createResponse(true, HttpStatus.CREATED, null, "Product successfully added");
+    }
+
+    @Get('/list/:productId')
+    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @HttpCode(HttpStatus.OK)
+    async getProductByIdAndStoreId(@StoreDecor() store: Store, @Param('productId') productId: number) {
+        if (isNaN(+productId)) throw new BadRequestException('Product id must be a valid number');
+
+        const data = await this.productService.getProductByIdAndStoreId(+productId, store.id);
+
+        return createResponse(true, HttpStatus.OK, data, "Product successfully retrieved");
     }
 }
