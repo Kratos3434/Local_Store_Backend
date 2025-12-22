@@ -43,7 +43,7 @@ export class ProductService {
                 categoryId: cat.id,
                 storeId,
                 featuredPhotoURL: photoUrl,
-                quantity
+                quantity: +product.quantity
             }
         });
 
