@@ -42,7 +42,8 @@ export class ProductService {
                 isNew: `${product.isNew}` === 'true' ? true : false,
                 categoryId: cat.id,
                 storeId,
-                featuredPhotoURL: photoUrl
+                featuredPhotoURL: photoUrl,
+                quantity
             }
         });
 
