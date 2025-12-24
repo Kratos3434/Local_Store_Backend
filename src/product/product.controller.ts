@@ -8,7 +8,7 @@ import createResponse from "../utils";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { cloudinaryStorage } from "../config/multer-cloudinary";
 import { cloudinary } from "../config/cloudinary.config";
-import { AuthSessionGuard } from "src/auth/auth-session.guard";
+import { AuthSessionGuard } from "../auth/auth-session.guard";
 import { UserDecor } from "../user/user.decorator";
 
 @Controller("/product")

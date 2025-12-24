@@ -9,8 +9,8 @@ import { UserDecor } from "../user/user.decorator";
 import { AuthSessionGuard } from "./auth-session.guard";
 import { AuthSellerVerifyGuard } from "./auth-seller-verify.guard";
 import { SellerDecor } from "../seller/seller.decorator";
-import { isValidProvince } from "src/data/provinces";
-import { isValidCity } from "src/data/cities";
+import { isValidProvince } from "../data/provinces";
+import { isValidCity } from "../data/cities";
 
 @Controller("/auth")
 export class AuthController {
