@@ -13,7 +13,9 @@ export interface Signup {
     firstName: string,
     lastName: string,
     password: string,
-    password2: string
+    password2: string,
+    city: string,
+    province: string,
 };
 
 export const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
@@ -25,7 +27,13 @@ export interface User {
     isVerified: boolean;
     createdAt: Date;
     updatedAt: Date | null;
+    location: User_Location
 };
+
+interface User_Location {
+    city: string;
+    province: string;
+}
 
 export interface Seller {
     id: number;

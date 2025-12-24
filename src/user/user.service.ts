@@ -9,6 +9,9 @@ export class UserService {
         return await this.prismaService.user.findUnique({
             where: {
                 id: userId
+            },
+            include: {
+                location: true
             }
         });
     }
@@ -21,9 +24,10 @@ export class UserService {
             include: {
                 user: {
                     select: {
-                        email: true
+                        email: true,
+                        location: true
                     }
-                }
+                },
             }
         });
 
@@ -35,7 +39,9 @@ export class UserService {
             userId: res.userId,
             email: res.user.email,
             createdAt: res.createdAt,
-            updatedAt: res.updatedAt
+            updatedAt: res.updatedAt,
+            city: res.user.location?.city,
+            province: res.user.location?.province
         };
     }
 }

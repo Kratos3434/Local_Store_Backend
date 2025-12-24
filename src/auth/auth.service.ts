@@ -51,6 +51,14 @@ export class AuthService {
             }
         });
 
+        await this.prismaService.user_Location.create({
+            data: {
+                city: data.city,
+                province: data.province,
+                userId: newUser.id
+            }
+        });
+
         const otp = randomstring.generate({
             charset: 'numeric',
             length: 6

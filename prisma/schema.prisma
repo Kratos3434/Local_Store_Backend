@@ -26,6 +26,7 @@ model User {
   updatedAt  DateTime?
   profile    Profile?
   otp        Otp?
+  location User_Location?
 }
 
 model Profile {
@@ -36,6 +37,15 @@ model Profile {
   updatedAt DateTime?
   userId    Int       @unique
   user      User      @relation(fields: [userId], references: [id])
+}
+
+model User_Location {
+  id Int @id @default(autoincrement())
+  city String
+  province String
+  country String @default("Canada")
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Otp {

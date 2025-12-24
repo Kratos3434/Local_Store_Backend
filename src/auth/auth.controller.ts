@@ -9,6 +9,8 @@ import { UserDecor } from "../user/user.decorator";
 import { AuthSessionGuard } from "./auth-session.guard";
 import { AuthSellerVerifyGuard } from "./auth-seller-verify.guard";
 import { SellerDecor } from "../seller/seller.decorator";
+import { isValidProvince } from "src/data/provinces";
+import { isValidCity } from "src/data/cities";
 
 @Controller("/auth")
 export class AuthController {
@@ -139,12 +141,16 @@ export class AuthController {
     @Post("/signup")
     @HttpCode(HttpStatus.CREATED)
     async signup(@Body() body: Signup, @Res({ passthrough: true }) res: Response) {
-        const { email, firstName, lastName, password, password2 } = body;
+        const { email, firstName, lastName, password, password2, city, province } = body;
 
         if (!email) throw new BadRequestException('Email is required');
         if (!isValidEmail(email)) throw new BadRequestException('Email is invalid');
         if (!firstName) throw new BadRequestException('First name is required');
         if (!lastName) throw new BadRequestException('Last name is required');
+        if (!province) throw new BadRequestException('Province is required');
+        if (!isValidProvince(province)) throw new BadRequestException("Province is not valid");
+        if (!city) throw new BadRequestException("City is required");
+        if (!isValidCity(province, city)) throw new BadRequestException(`${city} is not a valid city of ${province}`);
         if (!password) throw new BadRequestException('Password is required');
         if (!password2) throw new BadRequestException('Please confirm your password');
         if (password != password2) throw new BadRequestException('Passwords do not match');

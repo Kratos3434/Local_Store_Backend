@@ -77,10 +77,31 @@ export class ProductService {
         return await this.prismaService.product.findFirst({
             where: {
                 AND: [
-                    {id: productId},
-                    {storeId}
+                    { id: productId },
+                    { storeId }
                 ]
             }
         })
+    }
+
+    async getProductsByCity(city: string) {
+        return await this.prismaService.product.findMany({
+            where: {
+                store: {
+                    address: {
+                        city: city.toUpperCase()
+                    }
+                }
+            }
+        });
+    }
+
+    async getAllProducts() {
+        return await this.prismaService.product.findMany({
+            include: {
+                tags: true,
+                category: true
+            }
+        });
     }
 }
