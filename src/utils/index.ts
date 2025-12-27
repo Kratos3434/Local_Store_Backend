@@ -39,3 +39,32 @@ export function isValidCanadianPostalCode(code: string): boolean {
 
   return regex.test(normalized);
 }
+
+export function isDateTodayOrPast(input: Date | string): boolean {
+  const date = new Date(input);
+  if (isNaN(date.getTime())) return false;
+
+  const today = new Date();
+  
+  // Normalize both to start of day (local time)
+  date.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  return date <= today;
+}
+
+export function isTimePast8PM(input: Date | string): boolean {
+  const date = new Date(input);
+  if (isNaN(date.getTime())) return false;
+
+  const eightPM = new Date(date);
+  eightPM.setHours(20, 0, 0, 0);
+
+  return date >= eightPM;
+}
+
+export function isValidPhoneNumber(phone: string): boolean {
+  return /^(\+1)?[2-9]\d{2}[2-9]\d{2}\d{4}$/.test(
+    phone.replace(/\D/g, "")
+  );
+}

@@ -76,4 +76,15 @@ export interface Product {
     quantity: number;
     category: string;
     tags: string[];
+    store: Store;
+};
+
+export interface Create_Order {
+    productId: number;
+    statusName: string;
+    preferredMeetingPlace: string;
+    notes: string | null;
+    preferredMeetupDate: Date;
+    contactNumber: string;
+    quantity: number;
 };

@@ -70,4 +70,14 @@ export class ProductController {
 
         return createResponse(true, HttpStatus.OK, data, "List of all products");
     }
+
+    @Get('/public/list/:productId')
+    @HttpCode(HttpStatus.OK)
+    async getProductById(@Param('productId') productId: number) {
+        if (isNaN(+productId)) throw new BadRequestException('Product id must be a valid number');
+
+        const data = await this.productService.getProductById(+productId);
+
+        return createResponse(true, HttpStatus.OK, data, 'Product successfully retrieved');
+    }
 }

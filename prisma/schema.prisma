@@ -27,6 +27,7 @@ model User {
   profile    Profile?
   otp        Otp?
   location User_Location?
+  orders Order[]
 }
 
 model Profile {
@@ -100,6 +101,7 @@ model Store {
   sellerId             Int            @unique
   seller               Seller         @relation(fields: [sellerId], references: [id])
   products             Product[]
+  orders Order[]
 }
 
 model Store_Category {
@@ -140,6 +142,7 @@ model Product {
   tags             Product_Tags[]
   storeId          Int
   store            Store            @relation(fields: [storeId], references: [id])
+  orders Order[]
 }
 
 model Product_Category {
@@ -157,4 +160,40 @@ model Product_Tags {
   updatedAt DateTime?
   productId Int
   product   Product   @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id        Int       @id @default(autoincrement())
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime?
+  details Order_Details?
+  statusId Int
+  status Order_Status @relation(fields: [statusId], references: [id])
+  storeId Int
+  store Store @relation(fields: [storeId], references: [id])
+}
+
+model Order_Details {
+  id        Int       @id @default(autoincrement())
+  quantity Int
+  contactNumber String
+  preferredMeetingPlace String
+  preferredMeetupDate DateTime
+  notes String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime?
+  orderId Int @unique
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model Order_Status {
+  id        Int       @id @default(autoincrement())
+  status String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime?
+  orders Order[]
 }

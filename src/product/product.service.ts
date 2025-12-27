@@ -104,4 +104,15 @@ export class ProductService {
             }
         });
     }
+
+    async getProductById(productId: number) {
+        return await this.prismaService.product.findUnique({
+            where: {
+                id: productId
+            },
+            include: {
+                store: true
+            }
+        });
+    }
 }
