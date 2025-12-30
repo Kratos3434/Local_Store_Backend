@@ -18,6 +18,8 @@ import { ProductCategoryController } from './product-category/product-category.c
 import { ProductCategoryService } from './product-category/product-category.service';
 import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
+import { OrderStatusController } from './order-status/order-status.controller';
+import { OrderStatusService } from './order-status/order-status.service';
 
 @Module({
   controllers: [
@@ -30,6 +32,7 @@ import { OrderService } from './order/order.service';
     ProductController,
     ProductCategoryController,
     OrderController,
+    OrderStatusController,
   ],
   providers: [
     AppService,
@@ -42,6 +45,7 @@ import { OrderService } from './order/order.service';
     ProductService,
     ProductCategoryService,
     OrderService,
+    OrderStatusService,
   ],
   exports: [PrismaService],
 })

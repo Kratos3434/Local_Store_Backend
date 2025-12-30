@@ -53,14 +53,10 @@ export function isDateTodayOrPast(input: Date | string): boolean {
   return date <= today;
 }
 
-export function isTimePast8PM(input: Date | string): boolean {
-  const date = new Date(input);
-  if (isNaN(date.getTime())) return false;
+export function isTimeBetween8pmAnd7am(date: Date): boolean {
+  const hours = date.getHours(); // 0–23
 
-  const eightPM = new Date(date);
-  eightPM.setHours(20, 0, 0, 0);
-
-  return date >= eightPM;
+  return hours >= 20 || hours < 7;
 }
 
 export function isValidPhoneNumber(phone: string): boolean {

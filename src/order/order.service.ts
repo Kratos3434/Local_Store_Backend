@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { Create_Order, Product, User } from "../data";
+import { Create_Order, Order_Status, Product, User } from "../data";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
@@ -27,7 +27,7 @@ export class OrderService {
 
         const status = await this.prismaService.order_Status.findFirst({
             where: {
-                status: data.statusName
+                status: Order_Status.PENDING
             }
         });
 

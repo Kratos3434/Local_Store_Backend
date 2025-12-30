@@ -81,10 +81,16 @@ export interface Product {
 
 export interface Create_Order {
     productId: number;
-    statusName: string;
     preferredMeetingPlace: string;
     notes: string | null;
     preferredMeetupDate: Date;
     contactNumber: string;
     quantity: number;
+};
+
+export enum Order_Status {
+    PENDING = "Pending",
+    COMPLETE = "Complete",
+    CANCELLED = "Cancelled",
+    NO_SHOW = "No Show"
 };
