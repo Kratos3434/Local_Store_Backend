@@ -32,6 +32,16 @@ export class OrderService {
         });
 
         if (!status) throw new BadRequestException('Order status does not exist');
+
+        //Reduce the products stock temporarily
+        await this.prismaService.product.update({
+            where: {
+                id: product.id
+            },
+            data: {
+                quantity: product.quantity - data.quantity
+            }
+        });
         
         const newOrder = await this.prismaService.order.create({
             data: {
