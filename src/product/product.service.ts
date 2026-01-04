@@ -115,4 +115,16 @@ export class ProductService {
             }
         });
     }
+
+    async getProductMetadataById(productId: number) {
+        return await this.prismaService.product.findUnique({
+            where: {
+                id: productId
+            },
+            select: {
+               description: true,
+               name: true 
+            }
+        });
+    }
 }

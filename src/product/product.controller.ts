@@ -80,4 +80,14 @@ export class ProductController {
 
         return createResponse(true, HttpStatus.OK, data, 'Product successfully retrieved');
     }
+
+    @Get('/public/metadata/:productId')
+    @HttpCode(HttpStatus.OK)
+    async getProductMetadataById(@Param('productId') productId: number) {
+        if (isNaN(+productId)) throw new BadRequestException('Product id must be a valid number');
+
+        const data = await this.productService.getProductMetadataById(+productId);
+
+        return createResponse(true, HttpStatus.OK, data, 'Product successfully retrieved');
+    }
 }
