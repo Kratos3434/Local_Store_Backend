@@ -1,9 +1,12 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from "@nestjs/common";
 import { OrderService } from "./order.service";
 import { AuthSessionGuard } from "../auth/auth-session.guard";
 import { UserDecor } from "../user/user.decorator";
-import { type Create_Order, type User } from "../data";
+import { type Store, type Create_Order, type User } from "../data";
 import createResponse, { isDateTodayOrPast, isTimeBetween8pmAnd7am, isValidPhoneNumber } from "../utils";
+import { AuthSellerSessionGuard } from "../auth/auth-seller-session.guard";
+import { StoreGuard } from "../store/store.guard";
+import { StoreDecor } from "../store/store.decorator";
 
 @Controller('/order')
 export class OrderController {
@@ -27,5 +30,24 @@ export class OrderController {
         await this.orderService.createOrder(user, body);
 
         return createResponse(true, HttpStatus.CREATED, null, 'Order successfully created');
+    }
+
+    @Get('/list/seller')
+    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @HttpCode(HttpStatus.OK)
+    async getSellerOrders(@StoreDecor() store: Store, @Query('filter') filter: string) {
+        let data: any = null;
+
+        switch (filter) {
+            case "all": data = await this.orderService.getSellerOrdersByStoreId(store.id);
+                break;
+            case "pending": data = await this.orderService.getSellerPendingOrdersByStoreId(store.id);
+                break;
+            case "complete": data = await this.orderService.getSellerCompletedOrders(store.id);
+                break;
+            default: data = await this.orderService.getSellerOrdersByStoreId(store.id); 
+        }
+
+        return createResponse(true, HttpStatus.OK, data, "List of all orders");
     }
 }

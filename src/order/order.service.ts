@@ -4,7 +4,7 @@ import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class OrderService {
-    constructor(private prismaService: PrismaService) {}
+    constructor(private prismaService: PrismaService) { }
 
     async createOrder(user: User, data: Create_Order) {
         const product = await this.prismaService.product.findUnique({
@@ -42,7 +42,7 @@ export class OrderService {
                 quantity: product.quantity - data.quantity
             }
         });
-        
+
         const newOrder = await this.prismaService.order.create({
             data: {
                 userId: user.id,
@@ -64,5 +64,94 @@ export class OrderService {
         });
 
         return true;
+    }
+
+    async getSellerOrdersByStoreId(storeId: number) {
+        return await this.prismaService.order.findMany({
+            where: {
+                storeId
+            },
+            include: {
+                status: true,
+                user: {
+                    select: {
+                        email: true,
+                        profile: true
+                    }
+                },
+                details: {
+                    select: {
+                        quantity: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+    }
+
+    async getSellerPendingOrdersByStoreId(storeId: number) {
+        return await this.prismaService.order.findMany({
+            where: {
+                AND: [
+                    { storeId },
+                    {
+                        status: {
+                            status: Order_Status.PENDING
+                        }
+                    }
+                ]
+            },
+            include: {
+                status: true,
+                user: {
+                    select: {
+                        email: true,
+                        profile: true
+                    }
+                },
+                details: {
+                    select: {
+                        quantity: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+    }
+
+    async getSellerCompletedOrders(storeId: number) {
+        return await this.prismaService.order.findMany({
+            where: {
+                AND: [
+                    { storeId },
+                    {
+                        status: {
+                            status: Order_Status.COMPLETE
+                        }
+                    }
+                ]
+            },
+            include: {
+                status: true,
+                user: {
+                    select: {
+                        email: true,
+                        profile: true
+                    }
+                },
+                details: {
+                    select: {
+                        quantity: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
     }
 }
