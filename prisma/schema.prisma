@@ -168,6 +168,8 @@ model Order {
   product Product @relation(fields: [productId], references: [id])
   userId Int
   user User @relation(fields: [userId], references: [id])
+  amount Decimal          @db.Decimal(10, 2)
+  amountAfterTax Decimal          @db.Decimal(10, 2)
   createdAt        DateTime         @default(now())
   updatedAt        DateTime?
   details Order_Details?

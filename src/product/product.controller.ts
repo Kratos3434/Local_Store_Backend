@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { AuthSellerSessionGuard } from "../auth/auth-seller-session.guard";
 import { type Store, type Product, type Seller, type User } from "../data";
@@ -10,6 +10,8 @@ import { cloudinaryStorage } from "../config/multer-cloudinary";
 import { cloudinary } from "../config/cloudinary.config";
 import { AuthSessionGuard } from "../auth/auth-session.guard";
 import { UserDecor } from "../user/user.decorator";
+import { ProductGuard } from "./product.guard";
+import { ProductDecor } from "./product.decorator";
 
 @Controller("/product")
 export class ProductController {
@@ -45,14 +47,11 @@ export class ProductController {
     }
 
     @Get('/list/:productId')
-    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @UseGuards(AuthSellerSessionGuard, StoreGuard, ProductGuard)
     @HttpCode(HttpStatus.OK)
-    async getProductByIdAndStoreId(@StoreDecor() store: Store, @Param('productId') productId: number) {
-        if (isNaN(+productId)) throw new BadRequestException('Product id must be a valid number');
+    async getProductByIdAndStoreId(@ProductDecor() product: Product) {
 
-        const data = await this.productService.getProductByIdAndStoreId(+productId, store.id);
-
-        return createResponse(true, HttpStatus.OK, data, "Product successfully retrieved");
+        return createResponse(true, HttpStatus.OK, product, "Product successfully retrieved");
     }
 
     @Get('/city/:city')
@@ -89,5 +88,19 @@ export class ProductController {
         const data = await this.productService.getProductMetadataById(+productId);
 
         return createResponse(true, HttpStatus.OK, data, 'Product successfully retrieved');
+    }
+
+    @Put("/restock/:productId")
+    @UseGuards(AuthSellerSessionGuard, StoreGuard, ProductGuard)
+    @HttpCode(HttpStatus.OK)
+    async restockProduct(@ProductDecor() product: Product, @Body() body: {additionalStock: number}) {
+        const {additionalStock} = body;
+
+        if (!additionalStock) throw new BadRequestException("Additional stock is required");
+        if (isNaN(+additionalStock)) throw new BadRequestException("Additionla stock must be a valid number");
+
+        await this.productService.restockProduct(product, +additionalStock);
+
+        return createResponse(true, HttpStatus.OK, null, "Product successfully restocked");
     }
 }

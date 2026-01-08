@@ -127,4 +127,20 @@ export class ProductService {
             }
         });
     }
+
+    async restockProduct(product: Product, additionalStock: number) {
+        if (additionalStock <= 0) throw new BadRequestException("The added stock cannot be less than or equal to 0");
+
+        await this.prismaService.product.update({
+            where: {
+                id: product.id
+            },
+            data: {
+                quantity: product.quantity + additionalStock,
+                updatedAt: new Date()
+            }
+        });
+
+        return true;
+    }
 }

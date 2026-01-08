@@ -43,12 +43,18 @@ export class OrderService {
             }
         });
 
+        const price = product.priceInCad;
+
+        const total = price.mul(data.quantity);
+
         const newOrder = await this.prismaService.order.create({
             data: {
                 userId: user.id,
                 productId: product.id,
                 storeId: product.store.id,
-                statusId: status.id
+                statusId: status.id,
+                amount: total,
+                amountAfterTax: total
             }
         });
 

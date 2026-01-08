@@ -67,6 +67,7 @@ export interface Store_Address {
 };
 
 export interface Product {
+    id: number;
     name: string;
     description: string;
     priceInCad: number;
