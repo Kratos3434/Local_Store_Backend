@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { OrderService } from "./order.service";
 import { AuthSessionGuard } from "../auth/auth-session.guard";
 import { UserDecor } from "../user/user.decorator";
@@ -49,5 +49,53 @@ export class OrderController {
         }
 
         return createResponse(true, HttpStatus.OK, data, "List of all orders");
+    }
+
+    @Get("/list/:orderId")
+    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @HttpCode(HttpStatus.OK)
+    async getOrderByIdAndStoreId(@StoreDecor() store: Store, @Param('orderId') orderId: number) {
+        if (!orderId) throw new BadRequestException("Order id is missing");
+        if (isNaN(+orderId)) throw new BadRequestException("Order id must be a valid number");
+
+        const data = await this.orderService.getOrderByStoreIdAndOrderId(store.id, +orderId);
+
+        return createResponse(true, HttpStatus.OK, data, "Order successfully retireved");
+    }
+
+    @Put("/accept/:orderId")
+    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @HttpCode(HttpStatus.OK)
+    async acceptOrder(@StoreDecor() store: Store, @Param('orderId') orderId: number) {
+        if (!orderId) throw new BadRequestException("Order id is missing");
+        if (isNaN(+orderId)) throw new BadRequestException("Order id must be a valid number");
+
+        await this.orderService.acceptOrder(store.id, +orderId);
+
+        return createResponse(true, HttpStatus.OK, null, "Order accepted successfully.");
+    }
+
+    @Put('/decline/:orderId')
+    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @HttpCode(HttpStatus.OK)
+    async declineOrder(@StoreDecor() store: Store, @Param('orderId') orderId: number) {
+        if (!orderId) throw new BadRequestException("Order id is missing");
+        if (isNaN(+orderId)) throw new BadRequestException("Order id must be a valid number");
+
+        await this.orderService.declineOrder(store.id, +orderId);
+
+        return createResponse(true, HttpStatus.OK, null, "Order declined successfully.")
+    }
+
+    @Put('/complete/:orderId')
+    @UseGuards(AuthSellerSessionGuard, StoreGuard)
+    @HttpCode(HttpStatus.OK)
+    async completeOrder(@StoreDecor() store: Store, @Param('orderId') orderId: number) {
+        if (!orderId) throw new BadRequestException("Order id is missing");
+        if (isNaN(+orderId)) throw new BadRequestException("Order id must be a valid number");
+
+        await this.orderService.completeOrder(store.id, +orderId);
+
+        return createResponse(true, HttpStatus.OK, null, "Order completed successfully.")
     }
 }

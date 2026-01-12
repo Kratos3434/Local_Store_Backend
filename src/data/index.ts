@@ -93,5 +93,8 @@ export enum Order_Status {
     PENDING = "Pending",
     COMPLETE = "Complete",
     CANCELLED = "Cancelled",
-    NO_SHOW = "No Show"
+    NO_SHOW = "No Show",
+    ACCEPTED = "Accepted",
+    DECLINED = "Declined",
+    SHIPPED = "Shipped"
 };

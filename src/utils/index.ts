@@ -64,3 +64,7 @@ export function isValidPhoneNumber(phone: string): boolean {
     phone.replace(/\D/g, "")
   );
 }
+
+export function canAcceptOrder(meetupAt: Date): boolean {
+  return new Date().getTime() < meetupAt.getTime();
+}

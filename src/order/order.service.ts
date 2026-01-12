@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { Create_Order, Order_Status, Product, User } from "../data";
 import { PrismaService } from "../prisma/prisma.service";
+import { canAcceptOrder } from "../utils";
 
 @Injectable()
 export class OrderService {
@@ -159,5 +160,183 @@ export class OrderService {
                 createdAt: 'asc'
             }
         });
+    }
+
+    async getOrderByStoreIdAndOrderId(storeId: number, orderId: number) {
+        return await this.prismaService.order.findFirst({
+            where: {
+                AND: [
+                    { storeId },
+                    { id: orderId }
+                ]
+            },
+            include: {
+                product: true,
+                details: true,
+                status: true,
+                user: {
+                    select: {
+                        email: true,
+                        profile: true
+                    }
+                },
+            }
+        });
+    }
+
+    async acceptOrder(storeId: number, orderId: number) {
+        const order = await this.prismaService.order.findFirst({
+            where: {
+                AND: [
+                    { storeId },
+                    { id: orderId }
+                ]
+            },
+            include: {
+                details: true,
+                status: true,
+            }
+        });
+
+        if (!order) throw new BadRequestException("Order does not exist");
+        if (order.status.status !== Order_Status.PENDING) throw new BadRequestException("Only pending orders can be accepted");
+        if (!canAcceptOrder(new Date(order.details!.preferredMeetupDate))) {
+            const cancelled = await this.prismaService.order_Status.findFirst({
+                where: {
+                    status: Order_Status.CANCELLED
+                }
+            });
+
+            if (!cancelled) throw new BadRequestException("Cancelled status does not exist");
+
+            await this.prismaService.order.update({
+                where: {
+                    id: order.id
+                },
+                data: {
+                    statusId: cancelled.id,
+                    updatedAt: new Date()
+                }
+            });
+
+            throw new BadRequestException("You accepted this order on or after the meetup date. This order was automatically cancelled. Please review the other orders");
+        }
+
+        const accepted = await this.prismaService.order_Status.findFirst({
+            where: {
+                status: Order_Status.ACCEPTED
+            }
+        });
+
+        if (!accepted) throw new BadRequestException("Accepted status does not exist");
+
+        await this.prismaService.order.update({
+            where: {
+                id: order.id
+            },
+            data: {
+                statusId: accepted.id,
+                updatedAt: new Date()
+            }
+        });
+
+        return true;
+    }
+
+    async declineOrder(storeId: number, orderId: number) {
+        const order = await this.prismaService.order.findFirst({
+            where: {
+                AND: [
+                    { storeId },
+                    { id: orderId }
+                ]
+            },
+            include: {
+                details: true,
+                status: true,
+            }
+        });
+
+        if (!order) throw new BadRequestException("Order does not exist");
+        if (order.status.status !== Order_Status.PENDING) throw new BadRequestException("Only pending orders can be declined");
+        if (!canAcceptOrder(new Date(order.details!.preferredMeetupDate))) {
+            const cancelled = await this.prismaService.order_Status.findFirst({
+                where: {
+                    status: Order_Status.CANCELLED
+                }
+            });
+
+            if (!cancelled) throw new BadRequestException("Cancelled status does not exist");
+
+            await this.prismaService.order.update({
+                where: {
+                    id: order.id
+                },
+                data: {
+                    statusId: cancelled.id,
+                    updatedAt: new Date()
+                }
+            });
+
+            throw new BadRequestException("You declined this order on or after the meetup date. This order was automatically cancelled. Please review the other orders");
+        }
+
+        const declined = await this.prismaService.order_Status.findFirst({
+            where: {
+                status: Order_Status.DECLINED
+            }
+        });
+
+        if (!declined) throw new BadRequestException("Declined status does not exist");
+
+        await this.prismaService.order.update({
+            where: {
+                id: order.id
+            },
+            data: {
+                statusId: declined.id,
+                updatedAt: new Date()
+            }
+        });
+
+        return true;
+    }
+
+    async completeOrder(storeId: number, orderId: number) {
+        const order = await this.prismaService.order.findFirst({
+            where: {
+                AND: [
+                    { storeId },
+                    { id: orderId }
+                ]
+            },
+            include: {
+                details: true,
+                status: true,
+            }
+        });
+
+        if (!order) throw new BadRequestException("Order does not exist");
+        if (order.status.status !== Order_Status.ACCEPTED) throw new BadRequestException("Only accepted orders can be marked as complete");
+
+        const completed = await this.prismaService.order_Status.findFirst({
+            where: {
+                status: Order_Status.COMPLETE
+            }
+        });
+
+        if (!completed) throw new BadRequestException("Completed status does not exist");
+
+        await this.prismaService.order.update({
+            where: {
+                id: order.id
+            },
+            data: {
+                statusId: completed.id,
+                updatedAt: new Date()
+            }
+        });
+
+        return true;
     }
 }
