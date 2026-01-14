@@ -177,6 +177,7 @@ model Order {
   status Order_Status @relation(fields: [statusId], references: [id])
   storeId Int
   store Store @relation(fields: [storeId], references: [id])
+  type String @default("Meetup")
 }
 
 model Order_Details {

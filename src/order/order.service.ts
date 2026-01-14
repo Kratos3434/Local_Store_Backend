@@ -339,4 +339,55 @@ export class OrderService {
 
         return true;
     }
+
+    async getUserOrdersByUserId(userId: number) {
+        return await this.prismaService.order.findMany({
+            where: {
+                userId
+            },
+            include: {
+                product: true,
+                status: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+    }
+
+    async getUserMeetupOrdersByUserId(userId: number) {
+        return await this.prismaService.order.findMany({
+            where: {
+                AND: [
+                    {userId},
+                    {type: "Meetup"}
+                ]
+            },
+            include: {
+                product: true,
+                status: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+    }
+
+    async getUserShippingOrdersByUserId(userId: number) {
+        return await this.prismaService.order.findMany({
+            where: {
+                AND: [
+                    {userId},
+                    {type: "Shipping"}
+                ]
+            },
+            include: {
+                product: true,
+                status: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+    }
 }

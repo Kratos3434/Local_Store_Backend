@@ -51,6 +51,25 @@ export class OrderController {
         return createResponse(true, HttpStatus.OK, data, "List of all orders");
     }
 
+    @Get("/list/user")
+    @UseGuards(AuthSessionGuard)
+    @HttpCode(HttpStatus.OK)
+    async getUserOrders(@UserDecor() user: User, @Query('filter') filter: string) {
+        let data: any = null;
+
+        switch (filter) {
+            case "all": data = await this.orderService.getUserOrdersByUserId(user.id);
+                break;
+            case "meetup": data = await this.orderService.getUserMeetupOrdersByUserId(user.id);
+                break;
+            case "shipping": data = await this.orderService.getUserShippingOrdersByUserId(user.id);
+                break;
+            default: data = await this.orderService.getUserOrdersByUserId(user.id);
+        }
+
+        return createResponse(true, HttpStatus.OK, data, "List of all user orders");
+    }
+
     @Get("/list/:orderId")
     @UseGuards(AuthSellerSessionGuard, StoreGuard)
     @HttpCode(HttpStatus.OK)
