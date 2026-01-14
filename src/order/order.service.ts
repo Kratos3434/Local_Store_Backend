@@ -195,6 +195,7 @@ export class OrderService {
             include: {
                 details: true,
                 status: true,
+                product: true
             }
         });
 
@@ -216,6 +217,15 @@ export class OrderService {
                 data: {
                     statusId: cancelled.id,
                     updatedAt: new Date()
+                }
+            });
+
+            await this.prismaService.product.update({
+                where: {
+                    id: order.product.id
+                },
+                data: {
+                    quantity: order.product.quantity + 1
                 }
             });
 
@@ -254,6 +264,7 @@ export class OrderService {
             include: {
                 details: true,
                 status: true,
+                product: true
             }
         });
 
@@ -278,6 +289,15 @@ export class OrderService {
                 }
             });
 
+            await this.prismaService.product.update({
+                where: {
+                    id: order.product.id
+                },
+                data: {
+                    quantity: order.product.quantity + 1
+                }
+            });
+
             throw new BadRequestException("You declined this order on or after the meetup date. This order was automatically cancelled. Please review the other orders");
         }
 
@@ -296,6 +316,15 @@ export class OrderService {
             data: {
                 statusId: declined.id,
                 updatedAt: new Date()
+            }
+        });
+
+        await this.prismaService.product.update({
+            where: {
+                id: order.product.id
+            },
+            data: {
+                quantity: order.product.quantity + 1
             }
         });
 
@@ -359,8 +388,8 @@ export class OrderService {
         return await this.prismaService.order.findMany({
             where: {
                 AND: [
-                    {userId},
-                    {type: "Meetup"}
+                    { userId },
+                    { type: "Meetup" }
                 ]
             },
             include: {
@@ -377,8 +406,8 @@ export class OrderService {
         return await this.prismaService.order.findMany({
             where: {
                 AND: [
-                    {userId},
-                    {type: "Shipping"}
+                    { userId },
+                    { type: "Shipping" }
                 ]
             },
             include: {
