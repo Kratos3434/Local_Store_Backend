@@ -419,4 +419,20 @@ export class OrderService {
             }
         });
     }
+
+    async getOrderByIdAndUserId(orderId: number, userId: number) {
+        return await this.prismaService.order.findFirst({
+            where: {
+                AND: [
+                    {id: orderId},
+                    {userId}
+                ]
+            },
+            include: {
+                details: true,
+                status: true,
+                product: true
+            }
+        });
+    }
 }

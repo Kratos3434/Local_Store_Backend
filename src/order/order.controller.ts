@@ -117,4 +117,16 @@ export class OrderController {
 
         return createResponse(true, HttpStatus.OK, null, "Order completed successfully.")
     }
+
+    @Get("/details/:orderId")
+    @UseGuards(AuthSessionGuard)
+    @HttpCode(HttpStatus.OK)
+    async getOrderByIdAndUserId(@UserDecor() user: User, @Param('orderId') orderId: number) {
+        if (!orderId) throw new BadRequestException("Order id is missing");
+        if (isNaN(+orderId)) throw new BadRequestException("Order id must be a valid number");
+
+        const data = await this.orderService.getOrderByIdAndUserId(+orderId, user.id);
+
+        return createResponse(true, HttpStatus.OK, data, "Order by id and user id");
+    }
 }
